@@ -4,31 +4,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Simple-Chat-App</title>
 </head>
 
 <body>
-    <input type="text" name="" id="msg" />
+    <input type="text" name="" id="msgText">
     <button type="submit">Send</button>
     <ul>
-
+        <!-- Here The List Of Message Will Be There -->
     </ul>
+    <!-- This is a Script tag for socket.io -->
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        let socket = io()
-        socket.on('connect', (data) => {
-            socket.emit('messageToServer', "Hello Server This Message From The Client Side");
-            socket.on("messageFromServer", (msg) => {
-                // console.log(msg)
+        // io() inside the bracket you need to specify the server but if you are deploying don't specify anything
+        let socket = io();
+        // This Function Will Get The Message From The Input Tag And Send To The Server As The Event Called "msgText"
+        function sendMsg() {
+            const msg = document.querySelector("input").value;
+            socket.emit("msgText", msg)
+        }
+        // Calling That Function When Enater Key or Button is Pressed
+        document.querySelector("button").addEventListener("click", function() {
+            sendMsg();
+        })
+        document.addEventListener("keypress", function(event) {
+                if (event.key === "Enter") {
+                    sendMsg();
+                }
             })
-            document.querySelector("button").addEventListener("click", function() {
-                const chatMessage = document.querySelector("input").value;
-
-                socket.emit('chatMsg', chatMessage)
-            })
-            socket.on('chatMsgTo', (chat) => {
-                document.querySelector("ul").innerHTML += "<li>" + chat + "</li>"
-            })
+            // The Message Emit From The Server as The Event Called "msg" is Caught And show in The Client Side
+        socket.on("msg", function(msg) {
+            document.querySelector("ul").innerHTML += "<li>" + msg + "</li>"
         })
     </script>
 </body>
