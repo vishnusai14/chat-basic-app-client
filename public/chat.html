@@ -15,7 +15,7 @@
     </ul>
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        let socket = io("http://localhost:8000")
+        let socket = io()
         socket.on('connect', (data) => {
             socket.emit('messageToServer', "Hello Server This Message From The Client Side");
             socket.on("messageFromServer", (msg) => {
