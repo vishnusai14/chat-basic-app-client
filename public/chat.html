@@ -36,23 +36,31 @@
         <input type="text" class="form-control poz" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Type Message">
     </div>
     <button type="submit" class="btn btn-primary poz">Send</button>
+    <div id="userConnect">
+
+    </div>
     <ul>
         <!-- Here The List Of Message Will Be There -->
     </ul>
     <!-- This is a Script tag for socket.io -->
     <script src="/socket.io/socket.io.js"></script>
     <script>
+        //Ask The Name Of the User Connected..
+        const name = prompt("Enter Your Name : ")
+
         // io() inside the bracket you need to specify the server but if you are deploying don't specify anything
         let socket = io();
-        // This Function Will Get The Message From The Input Tag And Send To The Server As The Event Called "msgText"
+        //Emit The Name To The Server
+        socket.emit("new-user-name", name)
+            // This Function Will Get The Message From The Input Tag And Send To The Server As The Event Called "msgText"
         function sendMsg() {
             const msg = document.querySelector("input").value;
             socket.emit("msgText", msg)
         }
-        // Calling That Function When Enater Key or Button is Pressed
+        // Calling That Function When Enter Key or Button is Pressed
         document.querySelector("button").addEventListener("click", function() {
             sendMsg();
-            document.querySelector("input").value = "";
+            document.querySelector("input").value = ""
         })
         document.addEventListener("keypress", function(event) {
                 if (event.key === "Enter") {
@@ -61,9 +69,14 @@
                 }
             })
             // The Message Emit From The Server as The Event Called "msg" is Caught And show in The Client Side
-        socket.on("msg", function(msg) {
-            document.querySelector("ul").innerHTML += "<li>" + msg + "</li>"
+        socket.on("msg", function(data) {
+            console.log(data)
+            document.querySelector("ul").innerHTML += "<li>" + data.name + ":" + data.msgtext + "</li>"
         })
+        socket.on("old-msg", function(data) {
+            document.querySelector("ul").innerHTML += "<li>" + data.userName + ":" + data.chatMsg + "</li>"
+        })
+ 
     </script>
 </body>
 
